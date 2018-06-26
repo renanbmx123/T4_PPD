@@ -4,25 +4,21 @@ int compare(const void *a, const void *b) {
     return (*(int *) a - *(int *) b);
 }
 
-void
-bubble_sort(int size, int* array)
+void bs(int n, int * vetor)
 {
-	int holder, swap = 1;
-	for (int i = 0; i < size-1 && swap; ++i)
-	{
-		swap = 0;
-		int limit = size - i -1;
-		for (int j = 0 ; j < limit; ++j)
-		{
-			int current = array[j];
-			int next = array[j + 1];
-			if (current > next)
-			{
-				holder     = current;
-				array[j]   = next;
-				array[j+1] = holder;
-				swap       = 1;
-			}
-		}
-	}
+    int c=0, d, troca, trocou =1;
+
+    while ((c < (n-1)) & trocou )
+        {
+        trocou = 0;
+        for (d = 0 ; d < n - c - 1; d++)
+            if (vetor[d] > vetor[d+1])
+                {
+                troca      = vetor[d];
+                vetor[d]   = vetor[d+1];
+                vetor[d+1] = troca;
+                trocou = 1;
+                }
+        c++;
+        }
 }

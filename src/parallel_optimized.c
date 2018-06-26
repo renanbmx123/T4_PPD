@@ -3,7 +3,7 @@
 int main(int argc, char *argv[])
 {
 	double t1, t2;
-	t1 = MPI_Wtime();
+	
 	int my_rank;
 	int proc_n;
 	MPI_Status status;
@@ -12,6 +12,7 @@ int main(int argc, char *argv[])
 	MPI_Init(&argc, &argv);
 	MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
 	MPI_Comm_size(MPI_COMM_WORLD, &proc_n);
+	t1 = MPI_Wtime();
 	int piece_size = ARRAY_SIZE / proc_n;
 
 	if (my_rank == 0)
@@ -20,22 +21,7 @@ int main(int argc, char *argv[])
 		for (i = 0; i < ARRAY_SIZE; i++)
 			array[i] = ARRAY_SIZE - i;
 
-#ifdef DEBUG
-		printf("Root process unordered:\n");
-		for (i = 0; i < ARRAY_SIZE; i++)
-			printf("[%03d] ", array[i]);
-		printf("\n");
-#endif
-
 		int *result = order(my_rank, array, ARRAY_SIZE, status, piece_size);
-
-#ifdef DEBUG
-		printf("Root process ordered:\n");
-		for (i = 0; i < ARRAY_SIZE; i++)
-			printf("[%03d] ", result[i]);
-		printf("\n");
-#endif
-
 	}
 	else
 	{
@@ -53,7 +39,15 @@ int main(int argc, char *argv[])
 
 		if(is_leaf3(size, ARRAY_SIZE, proc_n))
 		{
-			bubble_sort(size, array);
+			if(alg == BSORT)
+			{
+				bs(size, array);
+			}
+			else if(alg == QSORT)
+			{
+				qsort(array, size,sizeof(int), compare);
+			}
+			
 
 			MPI_Send(array, size,
 					 MPI_INT, parent(my_rank), SEND_UP_TAG,
@@ -102,11 +96,11 @@ int* order(int my_rank, int array[], int size, MPI_Status status, int piece_size
 	//order rest locally
 	if(alg == BSORT)
 	{
-		bubble_sort(left_size, array + 2 * third_size);
+		bs(left_size, array + 2 * third_size);
 	}
 	else if(alg == QSORT)
 	{
-		qsort(vetor, left_size, array + 2 * third_size, compare);
+		qsort((array+2* third_size), left_size,sizeof(int), compare);
 	}
 	
 

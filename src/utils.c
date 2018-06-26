@@ -86,3 +86,27 @@ int is_leaf3(int current_size, int total_size, int number_of_process) {
 //	printf("current size: %d, total_size: %d, delta: %d\n", current_size, total_size, (total_size / number_of_process));
 	return current_size < (total_size / number_of_process) * 2;
 }
+int *inter(int vetor[], int tam, int offset1, int offset2, int offset3){
+  int *vetor_auxiliar;
+  int i1, i2, i3, i_aux;
+  vetor_auxiliar = (int *)malloc(sizeof(int) * tam);
+  i1 = offset1;
+  i2 = offset2;
+  i3 = offset3;
+  for (i_aux = 0; i_aux < tam; i_aux++) {
+    if (((vetor[i1] <= vetor[i2]) && (i1 < i2) && (vetor[i1] <= vetor[i3])) || ((i2 == offset3) && (i3 == tam))){
+      vetor_auxiliar[i_aux] = vetor[i1++];
+    }else if (((vetor[i2] <= vetor[i1]) && (i2 < i3) && (vetor[i2] <= vetor[i3])) || ((i1 == offset2) && (i3 == tam))){
+      vetor_auxiliar[i_aux] = vetor[i2++];
+    }else
+      if (i3 != tam){
+        vetor_auxiliar[i_aux] = vetor[i3++];
+      }else{
+        if (((vetor[i1] <= vetor[i2]) && (i1 < i2)))
+          vetor_auxiliar[i_aux] = vetor[i1++];
+        else
+          vetor_auxiliar[i_aux] = vetor[i2++];
+      }
+  }
+  return vetor_auxiliar;
+}
